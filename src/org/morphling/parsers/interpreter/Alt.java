@@ -1,4 +1,4 @@
-package org.morphling.parsers.org.morphling.parsers.interpreter;
+package org.morphling.parsers.interpreter;
 
 public class Alt extends Node {
     private final Node[] nodes;
