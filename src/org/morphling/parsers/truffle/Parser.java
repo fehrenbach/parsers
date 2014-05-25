@@ -7,9 +7,7 @@ import com.oracle.truffle.api.frame.FrameSlot;
 import com.oracle.truffle.api.frame.FrameSlotKind;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.RootNode;
-import org.morphling.parsers.interpreter.*;
 
-import java.lang.Character;
 import java.util.HashMap;
 
 /* Context free grammar:
@@ -71,8 +69,13 @@ public class Parser {
     }
 
     public static void main(String[] args) {
-        Parser p = new Parser("a");
-        p.addProduction(new NonterminalName("S"), new Alternatives(new Sequence(new TerminalSymbol('a', p.currentIndexSlot, p.stringSlot))));
+        Parser p = new Parser("aaaaaa");
+        p.addProduction(new NonterminalName("S"),
+                new Alternatives(
+                    new Sequence(new EOF(p.currentIndexSlot, p.stringSlot)),
+                    new Sequence(new TerminalSymbol('a', p.currentIndexSlot, p.stringSlot),
+                                 new UninitializedNonterminalCall(new NonterminalName("S"), p.environmentSlot))
+                    ));
         p.setStartSymbol(new NonterminalName("S"));
         Object parseResult = p.parse();
         System.out.println(parseResult);

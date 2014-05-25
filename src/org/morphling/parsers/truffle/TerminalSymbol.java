@@ -4,15 +4,12 @@ import com.oracle.truffle.api.frame.FrameSlot;
 import com.oracle.truffle.api.frame.FrameSlotTypeException;
 import com.oracle.truffle.api.frame.VirtualFrame;
 
-public class TerminalSymbol extends GrammarPrimitive {
+public class TerminalSymbol extends EOF {
     private final int c;
-    private final FrameSlot currentIndexSlot;
-    private final FrameSlot stringSlot;
 
     public TerminalSymbol(int c, FrameSlot currentIndexSlot, FrameSlot stringSlot) {
+        super(currentIndexSlot, stringSlot);
         this.c = c;
-        this.currentIndexSlot = currentIndexSlot;
-        this.stringSlot = stringSlot;
     }
 
     @Override
@@ -29,14 +26,6 @@ public class TerminalSymbol extends GrammarPrimitive {
             e.printStackTrace();
             return false;
         }
-    }
-
-    int getCurrentIndex(VirtualFrame frame) throws FrameSlotTypeException {
-        return frame.getInt(currentIndexSlot);
-    }
-
-    String getString(VirtualFrame frame) throws FrameSlotTypeException {
-        return (String) frame.getObject(stringSlot);
     }
 
     int getCurrentChar(VirtualFrame frame) throws FrameSlotTypeException {
