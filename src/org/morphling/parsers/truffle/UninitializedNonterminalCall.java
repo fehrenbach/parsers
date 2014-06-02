@@ -7,19 +7,18 @@ import com.oracle.truffle.api.frame.VirtualFrame;
 
 import java.util.HashMap;
 
-public class UninitializedNonterminalCall extends GrammarPrimitive {
+public class UninitializedNonterminalCall extends GrammarNode {
     private enum CallNodeType {
         UNOPTIMIZED, CACHEDEXECUTE, CACHEDCALL
     }
 
-    private static final CallNodeType callNodeType = CallNodeType.CACHEDEXECUTE;
+    private static final CallNodeType callNodeType = CallNodeType.CACHEDCALL;
 
     final NonterminalName nonterminalName;
-    final FrameSlot environmentSlot;
 
-    public UninitializedNonterminalCall(NonterminalName nonterminalName, FrameSlot environmentSlot) {
+    public UninitializedNonterminalCall(ParserState p, NonterminalName nonterminalName) {
+        super(p);
         this.nonterminalName = nonterminalName;
-        this.environmentSlot = environmentSlot;
     }
 
     @Override
@@ -27,36 +26,29 @@ public class UninitializedNonterminalCall extends GrammarPrimitive {
         CompilerAsserts.neverPartOfCompilation();
 
         Alternatives alternatives;
-        GrammarPrimitive replacementNode;
-        try {
-            alternatives = lookupInEnv(frame, nonterminalName);
+        GrammarNode replacementNode;
 
-            switch (callNodeType) {
-                case UNOPTIMIZED:
-                    replacementNode = new UnoptimizedNonterminalCall(nonterminalName, environmentSlot);
-                    break;
-                case CACHEDEXECUTE:
-                    replacementNode = new CachedNonterminalCallExecute(alternatives);
-                    break;
-                case CACHEDCALL:
-                    replacementNode = new CachedNonterminalCallTruffle(alternatives);
-                    break;
-                default:
-                    System.err.println("Not implemented org.morphling.parsers.truffle.UninitializedNonterminalCall.executeParse");
-                    replacementNode = null;
-            }
 
-            replace(replacementNode);
-        } catch (FrameSlotTypeException e) {
-            e.printStackTrace();
-            return false;
+        alternatives = state.lookupInEnv(nonterminalName);
+
+        switch (callNodeType) {
+            case UNOPTIMIZED:
+                replacementNode = new UnoptimizedNonterminalCall(state, nonterminalName);
+                break;
+            case CACHEDEXECUTE:
+                replacementNode = new CachedNonterminalCallExecute(state, alternatives);
+                break;
+            case CACHEDCALL:
+                replacementNode = new CachedNonterminalCallTruffle(state, alternatives);
+                break;
+            default:
+                System.err.println("Not implemented org.morphling.parsers.truffle.UninitializedNonterminalCall.executeParse");
+                replacementNode = null;
         }
 
-        return replacementNode.executeParse(frame);
-    }
+        replace(replacementNode);
 
-    Alternatives lookupInEnv(VirtualFrame frame, NonterminalName nonterminalName) throws FrameSlotTypeException {
-        HashMap<NonterminalName, Alternatives> env = (HashMap<NonterminalName, Alternatives>) frame.getObject(environmentSlot);
-        return env.get(nonterminalName);
+
+        return replacementNode.executeParse(frame);
     }
 }

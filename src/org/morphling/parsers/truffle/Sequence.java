@@ -3,17 +3,18 @@ package org.morphling.parsers.truffle;
 import com.oracle.truffle.api.frame.VirtualFrame;
 
 public class Sequence extends GrammarNode {
-    private final @Children GrammarPrimitive[] sequence;
+    private final @Children GrammarNode[] sequence;
 
-    public Sequence(GrammarPrimitive... sequence) {
+    public Sequence(ParserState p, GrammarNode... sequence) {
+        super(p);
         this.sequence = sequence;
         adoptChildren();
     }
 
     @Override
     public boolean executeParse(VirtualFrame frame) {
-        for (GrammarPrimitive grammarPrimitive : sequence) {
-            if (grammarPrimitive.executeParse(frame))
+        for (GrammarNode grammarNode : sequence) {
+            if (grammarNode.executeParse(frame))
                 continue;
             else
                 return false;

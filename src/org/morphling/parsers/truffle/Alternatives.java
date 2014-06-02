@@ -5,7 +5,8 @@ import com.oracle.truffle.api.frame.VirtualFrame;
 public class Alternatives extends GrammarNode {
     private final @Children Sequence[] alternatives;
 
-    public Alternatives(Sequence... alternatives) {
+    public Alternatives(ParserState p, Sequence... alternatives) {
+        super(p);
         this.alternatives = alternatives;
         adoptChildren();
     }
