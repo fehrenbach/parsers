@@ -8,6 +8,12 @@ import com.oracle.truffle.api.frame.VirtualFrame;
 import java.util.HashMap;
 
 public class UninitializedNonterminalCall extends GrammarPrimitive {
+    private enum CallNodeType {
+        UNOPTIMIZED, CACHEDEXECUTE, CACHEDCALL
+    }
+
+    private static final CallNodeType callNodeType = CallNodeType.CACHEDEXECUTE;
+
     final NonterminalName nonterminalName;
     final FrameSlot environmentSlot;
 
@@ -24,7 +30,22 @@ public class UninitializedNonterminalCall extends GrammarPrimitive {
         GrammarPrimitive replacementNode;
         try {
             alternatives = lookupInEnv(frame, nonterminalName);
-            replacementNode = new CachedNonterminalCall(alternatives);
+
+            switch (callNodeType) {
+                case UNOPTIMIZED:
+                    replacementNode = new UnoptimizedNonterminalCall(nonterminalName, environmentSlot);
+                    break;
+                case CACHEDEXECUTE:
+                    replacementNode = new CachedNonterminalCallExecute(alternatives);
+                    break;
+                case CACHEDCALL:
+                    replacementNode = new CachedNonterminalCallTruffle(alternatives);
+                    break;
+                default:
+                    System.err.println("Not implemented org.morphling.parsers.truffle.UninitializedNonterminalCall.executeParse");
+                    replacementNode = null;
+            }
+
             replace(replacementNode);
         } catch (FrameSlotTypeException e) {
             e.printStackTrace();

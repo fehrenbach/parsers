@@ -2,10 +2,10 @@ package org.morphling.parsers.truffle;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
 
-public class CachedNonterminalCall extends GrammarPrimitive {
+public class CachedNonterminalCallExecute extends GrammarPrimitive {
     final Alternatives alternatives;
 
-    public CachedNonterminalCall(Alternatives alternatives) {
+    public CachedNonterminalCallExecute(Alternatives alternatives) {
         super();
         this.alternatives = alternatives;
     }
