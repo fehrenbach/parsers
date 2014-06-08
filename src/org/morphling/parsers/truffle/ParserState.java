@@ -54,6 +54,7 @@ public class ParserState {
                                 new UninitializedNonterminalCall(p, new NonterminalName("S")))
                 ));
         Object parseResult = p.parse();
+        p.grammar.get(p.startSymbol);
         System.out.println(parseResult);
     }
 }
