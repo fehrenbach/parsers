@@ -23,15 +23,31 @@ public class Tests {
 
     public static void main(String[] args) {
         NonterminalName startSymbol = new NonterminalName("S");
-        ParserState p = new ParserState(repeat('a', 1000), startSymbol);
+        ParserState p = new ParserState(repeat('a', 100), startSymbol);
         NonterminalName endOfChain = new NonterminalName("E");
-        NonterminalName startOfChain = chainedProductions(p, endOfChain, 1000);
+        NonterminalName startOfChain = chainedProductions(p, endOfChain, 100);
         p.addProduction(startSymbol, new Alternatives(p,
                 new Sequence(p, new EOF(p)),
                 new Sequence(p, new UninitializedNonterminalCall(p, startOfChain))));
         p.addProduction(endOfChain, new Alternatives(p, new Sequence(p, new TerminalSymbol(p, 'a'), new UninitializedNonterminalCall(p, startSymbol))));
+
+        boolean foo = false;
+        for (int i = 0; i < 5000; i++) {
+            foo |= (Boolean) p.parse();
+            p.resetParserState();
+        }
+
+        System.out.println("finished warm up, hopefully.");
+
         long time = System.currentTimeMillis();
-        System.out.println(p.parse());
+
+        for (int i = 0; i < 5000; i++) {
+            foo |= (Boolean) p.parse();
+            p.resetParserState();
+        }
+
+        System.out.println(foo);
+
         System.out.println((System.currentTimeMillis() - time) + " ms");
     }
 }

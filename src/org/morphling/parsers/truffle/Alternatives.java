@@ -1,6 +1,7 @@
 package org.morphling.parsers.truffle;
 
 import com.oracle.truffle.api.frame.VirtualFrame;
+import com.oracle.truffle.api.nodes.ExplodeLoop;
 
 public class Alternatives extends GrammarNode {
     private final @Children Sequence[] alternatives;
@@ -11,7 +12,7 @@ public class Alternatives extends GrammarNode {
         adoptChildren();
     }
 
-    @Override
+    @Override @ExplodeLoop
     public boolean executeParse(VirtualFrame frame) {
         for (Sequence alternative : alternatives) {
             if (alternative.executeParse(frame))

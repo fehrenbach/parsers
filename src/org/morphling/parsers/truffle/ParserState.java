@@ -1,5 +1,6 @@
 package org.morphling.parsers.truffle;
 
+import com.oracle.truffle.api.CallTarget;
 import com.oracle.truffle.api.Truffle;
 
 import java.util.HashMap;
@@ -9,6 +10,7 @@ public class ParserState {
     private int currentIndex = 0;
     private final HashMap<NonterminalName, Alternatives> grammar = new HashMap<>();
     private final NonterminalName startSymbol;
+    private CallTarget ct;
 
     public ParserState(String string, NonterminalName startSymbol) {
         this.string = string;
@@ -42,7 +44,10 @@ public class ParserState {
     }
 
     public Object parse() {
-        return Truffle.getRuntime().createCallTarget(new ParserRootNode(grammar.get(startSymbol))).call();
+        if (ct == null) {
+            ct = Truffle.getRuntime().createCallTarget(new ParserRootNode(grammar.get(startSymbol)));
+        }
+        return ct.call();
     }
 
     public static void main(String[] args) {
@@ -56,5 +61,9 @@ public class ParserState {
         Object parseResult = p.parse();
         p.grammar.get(p.startSymbol);
         System.out.println(parseResult);
+    }
+
+    public void resetParserState() {
+        currentIndex = 0;
     }
 }
