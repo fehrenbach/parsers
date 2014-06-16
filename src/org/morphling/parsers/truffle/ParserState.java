@@ -9,12 +9,10 @@ public class ParserState {
     private final String string;
     private int currentIndex = 0;
     private final HashMap<NonterminalName, Alternatives> grammar = new HashMap<>();
-    private final NonterminalName startSymbol;
     private CallTarget ct;
 
-    public ParserState(String string, NonterminalName startSymbol) {
+    public ParserState(String string) {
         this.string = string;
-        this.startSymbol = startSymbol;
     }
 
     public void addProduction(NonterminalName name, Alternatives p) {
@@ -43,7 +41,7 @@ public class ParserState {
         currentIndex++;
     }
 
-    public Object parse() {
+    public Object parse(NonterminalName startSymbol) {
         if (ct == null) {
             ct = Truffle.getRuntime().createCallTarget(new ParserRootNode(grammar.get(startSymbol)));
         }
@@ -51,15 +49,14 @@ public class ParserState {
     }
 
     public static void main(String[] args) {
-        ParserState p = new ParserState("aaaaaa", new NonterminalName("S"));
+        ParserState p = new ParserState("aaaaaa");
         p.addProduction(new NonterminalName("S"),
                 new Alternatives(p,
                         new Sequence(p, new EOF(p)),
                         new Sequence(p, new TerminalSymbol(p, 'a'),
                                 new UninitializedNonterminalCall(p, new NonterminalName("S")))
                 ));
-        Object parseResult = p.parse();
-        p.grammar.get(p.startSymbol);
+        Object parseResult = p.parse(new NonterminalName("S"));
         System.out.println(parseResult);
     }
 

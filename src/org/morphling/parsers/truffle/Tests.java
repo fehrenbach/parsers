@@ -23,7 +23,7 @@ public class Tests {
 
     public static void main(String[] args) {
         NonterminalName startSymbol = new NonterminalName("S");
-        ParserState p = new ParserState(repeat('a', 100), startSymbol);
+        ParserState p = new ParserState(repeat('a', 100));
         NonterminalName endOfChain = new NonterminalName("E");
         NonterminalName startOfChain = chainedProductions(p, endOfChain, 100);
         p.addProduction(startSymbol, new Alternatives(p,
@@ -33,7 +33,7 @@ public class Tests {
 
         boolean foo = false;
         for (int i = 0; i < 5000; i++) {
-            foo |= (Boolean) p.parse();
+            foo |= (Boolean) p.parse(startSymbol);
             p.resetParserState();
         }
 
@@ -42,7 +42,7 @@ public class Tests {
         long time = System.currentTimeMillis();
 
         for (int i = 0; i < 5000; i++) {
-            foo |= (Boolean) p.parse();
+            foo |= (Boolean) p.parse(startSymbol);
             p.resetParserState();
         }
 
