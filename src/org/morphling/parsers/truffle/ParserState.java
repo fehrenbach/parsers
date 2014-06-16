@@ -1,5 +1,6 @@
 package org.morphling.parsers.truffle;
 
+import com.oracle.truffle.api.Assumption;
 import com.oracle.truffle.api.CallTarget;
 import com.oracle.truffle.api.Truffle;
 
@@ -10,12 +11,17 @@ public class ParserState {
     private int currentIndex = 0;
     private final HashMap<NonterminalName, Alternatives> grammar = new HashMap<>();
     private CallTarget ct;
+    private final HashMap<NonterminalName, Assumption> cachedNonterminals = new HashMap<>();
 
     public ParserState(String string) {
         this.string = string;
     }
 
     public void addProduction(NonterminalName name, Alternatives p) {
+        Assumption cachedNonterminalAssumption = cachedNonterminals.get(name);
+        if (cachedNonterminalAssumption != null) {
+            cachedNonterminalAssumption.invalidate();
+        }
         grammar.put(name, p);
     }
 
@@ -62,5 +68,11 @@ public class ParserState {
 
     public void resetParserState() {
         currentIndex = 0;
+    }
+
+    public Assumption cacheNonterminal(NonterminalName nonterminalName)  {
+        Assumption assumption = Truffle.getRuntime().createAssumption(nonterminalName.toString());
+        cachedNonterminals.put(nonterminalName, assumption);
+        return assumption;
     }
 }

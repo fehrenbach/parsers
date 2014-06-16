@@ -8,7 +8,7 @@ public class UninitializedNonterminalCall extends GrammarNode {
         UNOPTIMIZED, CACHEDEXECUTE, CACHEDCALL
     }
 
-    private static final CallNodeType callNodeType = CallNodeType.CACHEDCALL;
+    private static final CallNodeType callNodeType = CallNodeType.CACHEDEXECUTE;
 
     final NonterminalName nonterminalName;
 
@@ -32,10 +32,10 @@ public class UninitializedNonterminalCall extends GrammarNode {
                 replacementNode = new UnoptimizedNonterminalCall(state, nonterminalName);
                 break;
             case CACHEDEXECUTE:
-                replacementNode = new CachedNonterminalCallExecute(state, alternatives);
+                replacementNode = new CachedNonterminalCallExecute(state, alternatives, nonterminalName);
                 break;
             case CACHEDCALL:
-                replacementNode = new CachedNonterminalCallTruffle(state, alternatives);
+                replacementNode = new CachedNonterminalCallTruffle(state, alternatives, nonterminalName);
                 break;
             default:
                 System.err.println("Not implemented org.morphling.parsers.truffle.UninitializedNonterminalCall.executeParse");
