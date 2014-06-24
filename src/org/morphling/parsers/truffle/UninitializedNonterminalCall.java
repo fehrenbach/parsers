@@ -1,14 +1,16 @@
 package org.morphling.parsers.truffle;
 
 import com.oracle.truffle.api.CompilerAsserts;
+import com.oracle.truffle.api.CompilerDirectives;
 import com.oracle.truffle.api.frame.VirtualFrame;
 
 public class UninitializedNonterminalCall extends GrammarNode {
-    private enum CallNodeType {
+    public enum CallNodeType {
         UNOPTIMIZED, CACHEDEXECUTE, CACHEDCALL
     }
 
-    private static final CallNodeType callNodeType = CallNodeType.CACHEDEXECUTE;
+    @CompilerDirectives.CompilationFinal
+    public static CallNodeType callNodeType = CallNodeType.CACHEDEXECUTE;
 
     final NonterminalName nonterminalName;
 

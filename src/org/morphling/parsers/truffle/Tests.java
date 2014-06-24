@@ -22,32 +22,49 @@ public class Tests {
     }
 
     public static void main(String[] args) {
+        UninitializedNonterminalCall.callNodeType = UninitializedNonterminalCall.CallNodeType.UNOPTIMIZED;
+        long unoptimized = timeChainedProductions(150, 150, 5000, 5000);
+
+        UninitializedNonterminalCall.callNodeType = UninitializedNonterminalCall.CallNodeType.CACHEDEXECUTE;
+        long execute = timeChainedProductions(150, 150, 5000, 5000);
+
+        UninitializedNonterminalCall.callNodeType = UninitializedNonterminalCall.CallNodeType.CACHEDCALL;
+        long call = timeChainedProductions(150, 150, 5000, 5000);
+
+        System.out.println("Unoptimized: " + unoptimized);
+        System.out.println("Cached execute: " + execute);
+        System.out.println("Cached call: " + call);
+    }
+
+    private static long timeChainedProductions(int stringLength, int chainLength, int warmUpIterations, int parseIterations) {
         NonterminalName startSymbol = new NonterminalName("S");
-        ParserState p = new ParserState(repeat('a', 100));
+        ParserState p = new ParserState(repeat('a', stringLength));
         NonterminalName endOfChain = new NonterminalName("E");
-        NonterminalName startOfChain = chainedProductions(p, endOfChain, 100);
+        NonterminalName startOfChain = chainedProductions(p, endOfChain, chainLength);
         p.addProduction(startSymbol, new Alternatives(p,
                 new Sequence(p, new EOF(p)),
                 new Sequence(p, new UninitializedNonterminalCall(p, startOfChain))));
         p.addProduction(endOfChain, new Alternatives(p, new Sequence(p, new TerminalSymbol(p, 'a'), new UninitializedNonterminalCall(p, startSymbol))));
 
         boolean foo = false;
-        for (int i = 0; i < 5000; i++) {
+        for (int i = 0; i < warmUpIterations; i++) {
             foo |= (Boolean) p.parse(startSymbol);
             p.resetParserState();
         }
 
-        System.out.println("finished warm up, hopefully.");
+        System.out.println("finished warm up, hopefully, after " + warmUpIterations + " iterations");
 
         long time = System.currentTimeMillis();
 
-        for (int i = 0; i < 5000; i++) {
+        for (int i = 0; i < parseIterations; i++) {
             foo |= (Boolean) p.parse(startSymbol);
             p.resetParserState();
         }
 
-        System.out.println(foo);
+        time = System.currentTimeMillis() - time;
 
-        System.out.println((System.currentTimeMillis() - time) + " ms");
+        System.out.println("Do not optimize my code away: " + foo);
+
+        return time;
     }
 }
