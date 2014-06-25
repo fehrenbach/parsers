@@ -1,4 +1,4 @@
-package org.morphling.parsers.interpreter;
+package parsers.interpreter;
 
 import java.util.Arrays;
 import java.util.HashMap;

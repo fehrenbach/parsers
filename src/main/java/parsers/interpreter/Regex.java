@@ -1,8 +1,8 @@
-package org.morphling.parsers.interpreter;
+package parsers.interpreter;
 
 import java.util.regex.Pattern;
 
-public class Regex extends org.morphling.parsers.interpreter.Node {
+public class Regex extends parsers.interpreter.Node {
 
 
     private final Pattern p;

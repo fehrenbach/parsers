@@ -1,4 +1,4 @@
-package org.morphling.parsers;
+package parsers;
 
 import java.util.Arrays;
 import java.util.regex.Pattern;
