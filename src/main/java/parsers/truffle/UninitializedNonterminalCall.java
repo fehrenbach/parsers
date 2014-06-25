@@ -1,4 +1,4 @@
-package org.morphling.parsers.truffle;
+package parsers.truffle;
 
 import com.oracle.truffle.api.CompilerAsserts;
 import com.oracle.truffle.api.CompilerDirectives;
@@ -40,7 +40,7 @@ public class UninitializedNonterminalCall extends GrammarNode {
                 replacementNode = new CachedNonterminalCallTruffle(state, alternatives, nonterminalName);
                 break;
             default:
-                System.err.println("Not implemented org.morphling.parsers.truffle.UninitializedNonterminalCall.executeParse");
+                System.err.println("Not implemented parsers.truffle.UninitializedNonterminalCall.executeParse");
                 replacementNode = null;
         }
 

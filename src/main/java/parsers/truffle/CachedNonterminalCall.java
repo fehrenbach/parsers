@@ -1,4 +1,4 @@
-package org.morphling.parsers.truffle;
+package parsers.truffle;
 
 import com.oracle.truffle.api.Assumption;
 import com.oracle.truffle.api.frame.VirtualFrame;

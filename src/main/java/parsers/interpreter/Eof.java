@@ -1,4 +1,4 @@
-package org.morphling.parsers.interpreter;
+package parsers.interpreter;
 
 public class Eof extends Node {
     @Override

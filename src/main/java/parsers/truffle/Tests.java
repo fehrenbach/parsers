@@ -1,4 +1,4 @@
-package org.morphling.parsers.truffle;
+package parsers.truffle;
 
 public class Tests {
     private static NonterminalName getChainName(int i) {

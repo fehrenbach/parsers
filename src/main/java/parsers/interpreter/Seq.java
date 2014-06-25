@@ -1,4 +1,4 @@
-package org.morphling.parsers.interpreter;
+package parsers.interpreter;
 
 public class Seq extends Node {
 
