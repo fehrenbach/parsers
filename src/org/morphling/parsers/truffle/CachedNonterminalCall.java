@@ -5,7 +5,7 @@ import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.InvalidAssumptionException;
 
 public abstract class CachedNonterminalCall extends GrammarNode {
-    final NonterminalName nonterminalName;
+	final NonterminalName nonterminalName;
     final Assumption grammarUnchanged;
 
     protected CachedNonterminalCall(ParserState p, NonterminalName nonterminalName) {

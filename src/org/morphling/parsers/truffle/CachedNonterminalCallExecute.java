@@ -3,7 +3,7 @@ package org.morphling.parsers.truffle;
 import com.oracle.truffle.api.frame.VirtualFrame;
 
 public class CachedNonterminalCallExecute extends CachedNonterminalCall {
-    final Alternatives alternatives;
+    @Child Alternatives alternatives;
     final NonterminalName nonterminalName;
 
     public CachedNonterminalCallExecute(ParserState p, Alternatives alternatives, NonterminalName nonterminalName) {

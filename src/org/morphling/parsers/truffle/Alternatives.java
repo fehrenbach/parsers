@@ -9,7 +9,6 @@ public class Alternatives extends GrammarNode {
     public Alternatives(ParserState p, Sequence... alternatives) {
         super(p);
         this.alternatives = alternatives;
-        adoptChildren();
     }
 
     @Override @ExplodeLoop

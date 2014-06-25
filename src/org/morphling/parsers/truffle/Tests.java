@@ -23,16 +23,16 @@ public class Tests {
 
     public static void main(String[] args) {
         UninitializedNonterminalCall.callNodeType = UninitializedNonterminalCall.CallNodeType.UNOPTIMIZED;
-        long unoptimized = timeChainedProductions(150, 150, 5000, 5000);
+        long unoptimized = timeChainedProductions(150, 150, 50000, 5000);
 
-        UninitializedNonterminalCall.callNodeType = UninitializedNonterminalCall.CallNodeType.CACHEDEXECUTE;
-        long execute = timeChainedProductions(150, 150, 5000, 5000);
+//        UninitializedNonterminalCall.callNodeType = UninitializedNonterminalCall.CallNodeType.CACHEDEXECUTE;
+//        long execute = timeChainedProductions(150, 150, 5000, 5000);
 
         UninitializedNonterminalCall.callNodeType = UninitializedNonterminalCall.CallNodeType.CACHEDCALL;
-        long call = timeChainedProductions(150, 150, 5000, 5000);
+        long call = timeChainedProductions(150, 150, 50000, 5000);
 
         System.out.println("Unoptimized: " + unoptimized);
-        System.out.println("Cached execute: " + execute);
+//        System.out.println("Cached execute: " + execute);
         System.out.println("Cached call: " + call);
     }
 

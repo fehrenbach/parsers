@@ -3,13 +3,14 @@ package org.morphling.parsers.truffle;
 import com.oracle.truffle.api.Assumption;
 import com.oracle.truffle.api.CallTarget;
 import com.oracle.truffle.api.Truffle;
+import com.oracle.truffle.api.CompilerDirectives.SlowPath;
 
 import java.util.HashMap;
 
 public class ParserState {
     private final String string;
     private int currentIndex = 0;
-    private final HashMap<NonterminalName, Alternatives> grammar = new HashMap<>();
+    private final HashMap<NonterminalName, CallTarget> grammar = new HashMap<>();
     private CallTarget ct;
     private final HashMap<NonterminalName, Assumption> cachedNonterminals = new HashMap<>();
 
@@ -22,10 +23,11 @@ public class ParserState {
         if (cachedNonterminalAssumption != null) {
             cachedNonterminalAssumption.invalidate();
         }
-        grammar.put(name, p);
+        grammar.put(name, Truffle.getRuntime().createCallTarget(new ParserRootNode(p)));
     }
 
-    public Alternatives lookupInEnv(NonterminalName nonterminalName) {
+    @SlowPath
+    public CallTarget lookupInEnv(NonterminalName nonterminalName) {
         return grammar.get(nonterminalName);
     }
 
@@ -49,7 +51,7 @@ public class ParserState {
 
     public Object parse(NonterminalName startSymbol) {
         if (ct == null) {
-            ct = Truffle.getRuntime().createCallTarget(new ParserRootNode(grammar.get(startSymbol)));
+            ct = grammar.get(startSymbol);
         }
         return ct.call();
     }

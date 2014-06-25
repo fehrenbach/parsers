@@ -1,8 +1,10 @@
 package org.morphling.parsers.truffle;
 
+import com.oracle.truffle.api.CallTarget;
 import com.oracle.truffle.api.CompilerAsserts;
 import com.oracle.truffle.api.CompilerDirectives;
 import com.oracle.truffle.api.frame.VirtualFrame;
+import com.oracle.truffle.api.nodes.NodeUtil;
 
 public class UninitializedNonterminalCall extends GrammarNode {
     public enum CallNodeType {
@@ -23,19 +25,19 @@ public class UninitializedNonterminalCall extends GrammarNode {
     public boolean executeParse(VirtualFrame frame) {
         CompilerAsserts.neverPartOfCompilation();
 
-        Alternatives alternatives;
+        CallTarget alternatives;
         GrammarNode replacementNode;
 
 
         alternatives = state.lookupInEnv(nonterminalName);
-
+        
         switch (callNodeType) {
             case UNOPTIMIZED:
                 replacementNode = new UnoptimizedNonterminalCall(state, nonterminalName);
                 break;
-            case CACHEDEXECUTE:
-                replacementNode = new CachedNonterminalCallExecute(state, alternatives, nonterminalName);
-                break;
+//            case CACHEDEXECUTE:
+//                replacementNode = new CachedNonterminalCallExecute(state, alternatives, nonterminalName);
+//                break;
             case CACHEDCALL:
                 replacementNode = new CachedNonterminalCallTruffle(state, alternatives, nonterminalName);
                 break;

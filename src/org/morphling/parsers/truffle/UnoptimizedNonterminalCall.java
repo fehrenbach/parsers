@@ -1,10 +1,14 @@
 package org.morphling.parsers.truffle;
 
+import com.oracle.truffle.api.Truffle;
 import com.oracle.truffle.api.frame.VirtualFrame;
+import com.oracle.truffle.api.nodes.IndirectCallNode;
 
 public class UnoptimizedNonterminalCall extends GrammarNode {
     final NonterminalName nonterminalName;
 
+    @Child IndirectCallNode indirectCall = Truffle.getRuntime().createIndirectCallNode();
+    
     public UnoptimizedNonterminalCall(ParserState p, NonterminalName nonterminalName) {
         super(p);
         this.nonterminalName = nonterminalName;
@@ -12,7 +16,6 @@ public class UnoptimizedNonterminalCall extends GrammarNode {
 
     @Override
     public boolean executeParse(VirtualFrame frame) {
-        Alternatives alternatives = state.lookupInEnv(nonterminalName);
-        return alternatives.executeParse(frame);
+    	return (Boolean)indirectCall.call(frame, state.lookupInEnv(nonterminalName), new Object[0]);
     }
 }

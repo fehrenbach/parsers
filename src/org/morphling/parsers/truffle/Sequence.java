@@ -9,7 +9,6 @@ public class Sequence extends GrammarNode {
     public Sequence(ParserState p, GrammarNode... sequence) {
         super(p);
         this.sequence = sequence;
-        adoptChildren();
     }
 
     @Override @ExplodeLoop
