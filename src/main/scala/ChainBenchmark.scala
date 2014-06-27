@@ -4,7 +4,14 @@ import parsers.truffle.{ParserState, Tests, UninitializedNonterminalCall}
 object ChainBenchmark
 extends PerformanceTest {
 
-  val sizes = Gen.range("chainLength")(50, 100, 150)
+  val sizes = Gen.enumeration("chainLength")(50, 100, 150)
+
+  val unoptimizedParsers = sizes map (chainLength => {
+    UninitializedNonterminalCall.callNodeType = UninitializedNonterminalCall.CallNodeType.UNOPTIMIZED
+    val parser = new ParserState(Tests.repeat('a', 150));
+    val startSymbol = Tests.createChainedProductions(parser, chainLength)
+    (parser, startSymbol)
+  })
 
   performance of "Long chains" config (
     // Just want to run one VM, but the Graal-enabled one with custom flags.
@@ -13,15 +20,11 @@ extends PerformanceTest {
     exec.jvmflags -> "-server -Xss32m -Dtruffle.TraceRewrites=true -Dtruffle.DetailedRewriteReasons=true -G:+TraceTruffleCompilationDetails -G:+TraceTruffleCompilation -G:TruffleCompilationThreshold=1 -XX:+UnlockDiagnosticVMOptions -XX:CompileCommand=print,*::executeHelper"
     ) in {
     performance of "unoptimized" in {
-      using(sizes) in {
-        chainLength => {
-          UninitializedNonterminalCall.callNodeType = UninitializedNonterminalCall.CallNodeType.UNOPTIMIZED
-          val parser = new ParserState(Tests.repeat('a', 150));
-          val startSymbol = Tests.createChainedProductions(parser, chainLength)
-          measure method "parse" in {
-            parser.resetParserState()
-            parser.parse(startSymbol)
-          }
+      using(unoptimizedParsers) in {
+        unoptimizedParser => {
+          val (parser, startSymbol) = unoptimizedParser
+          parser.resetParserState()
+          parser.parse(startSymbol)
         }
       }
     }
