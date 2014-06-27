@@ -13,7 +13,7 @@ public class Tests {
         return getChainName(0);
     }
 
-    private static String repeat(char c, int n) {
+    public static String repeat(char c, int n) {
         StringBuilder sb = new StringBuilder(n);
         for (int i = 0; i < n; i++) {
             sb.append(c);
@@ -37,14 +37,8 @@ public class Tests {
     }
 
     private static long timeChainedProductions(int stringLength, int chainLength, int warmUpIterations, int parseIterations) {
-        NonterminalName startSymbol = new NonterminalName("S");
         ParserState p = new ParserState(repeat('a', stringLength));
-        NonterminalName endOfChain = new NonterminalName("E");
-        NonterminalName startOfChain = chainedProductions(p, endOfChain, chainLength);
-        p.addProduction(startSymbol, new Alternatives(p,
-                new Sequence(p, new EOF(p)),
-                new Sequence(p, new UninitializedNonterminalCall(p, startOfChain))));
-        p.addProduction(endOfChain, new Alternatives(p, new Sequence(p, new TerminalSymbol(p, 'a'), new UninitializedNonterminalCall(p, startSymbol))));
+        NonterminalName startSymbol = createChainedProductions(p, chainLength);
 
         boolean foo = false;
         for (int i = 0; i < warmUpIterations; i++) {
@@ -66,5 +60,16 @@ public class Tests {
         System.out.println("Do not optimize my code away: " + foo);
 
         return time;
+    }
+
+    public static NonterminalName createChainedProductions(ParserState p, int chainLength) {
+        NonterminalName startSymbol = new NonterminalName("S");
+        NonterminalName endOfChain = new NonterminalName("E");
+        NonterminalName startOfChain = chainedProductions(p, endOfChain, chainLength);
+        p.addProduction(startSymbol, new Alternatives(p,
+                new Sequence(p, new EOF(p)),
+                new Sequence(p, new UninitializedNonterminalCall(p, startOfChain))));
+        p.addProduction(endOfChain, new Alternatives(p, new Sequence(p, new TerminalSymbol(p, 'a'), new UninitializedNonterminalCall(p, startSymbol))));
+        return startSymbol;
     }
 }
