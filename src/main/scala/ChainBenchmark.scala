@@ -54,7 +54,7 @@ extends PerformanceTest.OfflineReport {
 
     performance of "cached" in {
       using(sizes) setUp {
-        setupParser(UninitializedNonterminalCall.CallNodeType.CACHEDCALL)
+        setupParser(UninitializedNonterminalCall.CallNodeType.CACHED)
       } in {
         chainLength => {
           val (parser, startSymbol) = parsers(chainLength)

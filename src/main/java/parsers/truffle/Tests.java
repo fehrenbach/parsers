@@ -28,7 +28,7 @@ public class Tests {
 //        UninitializedNonterminalCall.callNodeType = UninitializedNonterminalCall.CallNodeType.CACHEDEXECUTE;
 //        long execute = timeChainedProductions(150, 150, 5000, 5000);
 
-        UninitializedNonterminalCall.callNodeType = UninitializedNonterminalCall.CallNodeType.CACHEDCALL;
+        UninitializedNonterminalCall.callNodeType = UninitializedNonterminalCall.CallNodeType.CACHED;
         long call = timeChainedProductions(150, 150, 50000, 5000);
 
         System.out.println("Unoptimized: " + unoptimized);

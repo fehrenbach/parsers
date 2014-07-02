@@ -4,15 +4,14 @@ import com.oracle.truffle.api.CallTarget;
 import com.oracle.truffle.api.CompilerAsserts;
 import com.oracle.truffle.api.CompilerDirectives;
 import com.oracle.truffle.api.frame.VirtualFrame;
-import com.oracle.truffle.api.nodes.NodeUtil;
 
 public class UninitializedNonterminalCall extends GrammarNode {
     public enum CallNodeType {
-        UNOPTIMIZED, CACHEDEXECUTE, CACHEDCALL
+        UNOPTIMIZED, CACHED
     }
 
     @CompilerDirectives.CompilationFinal
-    public static CallNodeType callNodeType = CallNodeType.CACHEDEXECUTE;
+    public static CallNodeType callNodeType = CallNodeType.CACHED;
 
     final NonterminalName nonterminalName;
 
@@ -35,11 +34,8 @@ public class UninitializedNonterminalCall extends GrammarNode {
             case UNOPTIMIZED:
                 replacementNode = new UnoptimizedNonterminalCall(state, nonterminalName);
                 break;
-//            case CACHEDEXECUTE:
-//                replacementNode = new CachedNonterminalCallExecute(state, alternatives, nonterminalName);
-//                break;
-            case CACHEDCALL:
-                replacementNode = new CachedNonterminalCallTruffle(state, alternatives, nonterminalName);
+            case CACHED:
+                replacementNode = new CachedNonterminalCall(state, alternatives, nonterminalName);
                 break;
             default:
                 System.err.println("Not implemented parsers.truffle.UninitializedNonterminalCall.executeParse");
@@ -47,7 +43,7 @@ public class UninitializedNonterminalCall extends GrammarNode {
         }
 
 
-        replace(replacementNode);
+        replace(replacementNode, "Call nonterminal " + nonterminalName);
 
 
         return replacementNode.executeParse(frame);
