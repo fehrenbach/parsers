@@ -15,7 +15,7 @@ extends PerformanceTest.OfflineReport {
     def generate(params: Parameters) = t.generate(params)
   }
 
-  override def reporter = Reporter.Composite(RegressionReporter(Tester.Accepter(), Historian.Window(1)), DsvReporter(','), super.reporter)
+  override def reporter = Reporter.Composite(CSVReporter(), RegressionReporter(Tester.Accepter(), Historian.Window(1)), DsvReporter(','), super.reporter)
 
 
   performance of "LongChains" config (
