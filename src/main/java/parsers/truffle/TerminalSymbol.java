@@ -20,4 +20,11 @@ public class TerminalSymbol extends EOF {
             return false;
         }
     }
+
+    @Override
+    public String toString() {
+        return "TerminalSymbol{" +
+                "c='" + Character.getName(c) +
+                "'}";
+    }
 }

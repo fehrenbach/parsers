@@ -34,4 +34,11 @@ public class CachedNonterminalCall extends GrammarNode {
             return replacementNode.executeParse(frame);
         }
     }
+
+    @Override
+    public String toString() {
+        return "CachedNonterminalCall{" +
+                "nonterminalName=" + nonterminalName +
+                '}';
+    }
 }

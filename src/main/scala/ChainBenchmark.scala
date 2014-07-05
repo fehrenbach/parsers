@@ -25,7 +25,7 @@ extends PerformanceTest.OfflineReport {
     // Just want to run one VM, but the Graal-enabled one with custom flags.
     exec.independentSamples -> 1,
     exec.jvmcmd -> "/home/stefan/opt/graalvm-jdk1.8.0-0.3/bin/java",
-    exec.jvmflags -> "-server -Xss64m -Dtruffle.TraceRewrites=true -Dtruffle.DetailedRewriteReasons=true -G:+TraceTruffleCompilationDetails -G:+TraceTruffleCompilation -G:TruffleCompilationThreshold=1 -XX:+UnlockDiagnosticVMOptions -XX:CompileCommand=print,*::executeHelper"
+    exec.jvmflags -> "-server -Xss64m -G:+TruffleCompilationExceptionsAreFatal -G:+TraceTruffleInlining -Dtruffle.TraceRewrites=true -Dtruffle.DetailedRewriteReasons=true -G:+TraceTruffleCompilationDetails -G:+TraceTruffleCompilation -G:TruffleCompilationThreshold=1 -XX:+UnlockDiagnosticVMOptions -XX:CompileCommand=print,*::executeHelper"
     ) in {
     val parsers: mutable.Map[Int, (ParserState, NonterminalName)] = mutable.HashMap()
 
@@ -46,7 +46,7 @@ extends PerformanceTest.OfflineReport {
       })
     }
 
-    performance of "unoptimized" in {
+    measure method("unoptimized") in {
       using(sizes) setUp {
         setupParser(UninitializedNonterminalCall.CallNodeType.UNOPTIMIZED)
       } in {
@@ -58,7 +58,7 @@ extends PerformanceTest.OfflineReport {
       }
     }
 
-    performance of "cached" in {
+    measure method("cached") in {
       using(sizes) setUp {
         setupParser(UninitializedNonterminalCall.CallNodeType.CACHED)
       } in {
@@ -70,7 +70,7 @@ extends PerformanceTest.OfflineReport {
       }
     }
 
-    performance of "optimal" in {
+    measure method("optimal") in {
       val s = Tests.repeat('a', 150)
       using(sizes) in {
         _ => {

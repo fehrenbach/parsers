@@ -14,4 +14,11 @@ public class ParserRootNode extends RootNode {
     public Object execute(VirtualFrame frame) {
         return alternatives.executeParse(frame);
     }
+
+    @Override
+    public String toString() {
+        return "ParserRootNode{" +
+                "alternatives=" + alternatives +
+                '}';
+    }
 }

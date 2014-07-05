@@ -3,6 +3,8 @@ package parsers.truffle;
 import com.oracle.truffle.api.frame.VirtualFrame;
 import com.oracle.truffle.api.nodes.ExplodeLoop;
 
+import java.util.Arrays;
+
 public class Alternatives extends GrammarNode {
     private final @Children Sequence[] alternatives;
 
@@ -20,5 +22,12 @@ public class Alternatives extends GrammarNode {
                 continue;
         }
         return false;
+    }
+
+    @Override
+    public String toString() {
+        return "Alternatives{" +
+                "alternatives=" + Arrays.toString(alternatives) +
+                '}';
     }
 }
