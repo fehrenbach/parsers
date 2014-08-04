@@ -68,4 +68,15 @@ public class Tests {
         p.addProduction(endOfChain, new Alternatives(p, new Sequence(p, new TerminalSymbol(p, 'a'), new UninitializedNonterminalCall(p, startSymbol))));
         return startSymbol;
     }
+
+    public static NonterminalName createChainedProductionsOuter(ParserState p, int chainLength) {
+        NonterminalName startSymbol = new NonterminalName("S");
+        NonterminalName endOfChain = new NonterminalName("E");
+        NonterminalName startOfChain = chainedProductions(p, endOfChain, chainLength);
+        p.addProduction(startSymbol, new Alternatives(p,
+                new Sequence(p, new EOF(p)),
+                new Sequence(p, new UninitializedNonterminalCall(p, startOfChain), new UninitializedNonterminalCall(p, startSymbol))));
+        p.addProduction(endOfChain, new Alternatives(p, new Sequence(p, new TerminalSymbol(p, 'a'))));
+        return startSymbol;
+    }
 }
