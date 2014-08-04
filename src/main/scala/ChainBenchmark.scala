@@ -25,7 +25,7 @@ extends PerformanceTest.OfflineReport {
     // Just want to run one VM, but the Graal-enabled one with custom flags.
     exec.independentSamples -> 1,
     exec.jvmcmd -> "/home/stefan/opt/graalvm-jdk1.8.0-0.3/bin/java",
-    exec.jvmflags -> "-server -Xss64m -G:+TruffleCompilationExceptionsAreFatal -G:+TraceTruffleInlining -Dtruffle.TraceRewrites=true -Dtruffle.DetailedRewriteReasons=true -G:+TraceTruffleCompilationDetails -G:+TraceTruffleCompilation -G:TruffleCompilationThreshold=1 -XX:+UnlockDiagnosticVMOptions -XX:CompileCommand=print,*::executeHelper"
+    exec.jvmflags -> "-server -Xss64m -G:+TruffleCompilationExceptionsAreFatal -G:+TraceTruffleInlining -Dtruffle.TraceRewrites=true -Dtruffle.DetailedRewriteReasons=true -G:+TraceTruffleCompilationDetails -G:+TraceTruffleCompilation -G:TruffleCompilationThreshold=1 -XX:+UnlockDiagnosticVMOptions -XX:CompileCommand=print,*::callRoot"
     ) in {
     val parsers: mutable.Map[Int, (ParserState, NonterminalName)] = mutable.HashMap()
 
