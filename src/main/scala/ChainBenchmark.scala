@@ -1,5 +1,6 @@
 import org.scalameter.Parameters
 import org.scalameter.api._
+import parsers.ChainsRD
 import parsers.truffle.{NonterminalName, ParserState, Tests, UninitializedNonterminalCall}
 
 import scala.collection.mutable
@@ -25,7 +26,8 @@ extends PerformanceTest.OfflineReport {
     // Just want to run one VM, but the Graal-enabled one with custom flags.
     exec.independentSamples -> 1,
     exec.jvmcmd -> "/home/stefan/opt/graalvm-jdk1.8.0-0.3/bin/java",
-    exec.jvmflags -> "-server -Xss64m -G:+TruffleCompilationExceptionsAreFatal -G:+TraceTruffleInlining -Dtruffle.TraceRewrites=true -Dtruffle.DetailedRewriteReasons=true -G:+TraceTruffleCompilationDetails -G:+TraceTruffleCompilation -G:TruffleCompilationThreshold=1 -XX:+UnlockDiagnosticVMOptions -XX:CompileCommand=print,*::callRoot"
+    //exec.jvmflags -> "-server -Xss64m -G:+TruffleCompilationExceptionsAreFatal -G:+TraceTruffleInlining -Dtruffle.TraceRewrites=true -Dtruffle.DetailedRewriteReasons=true -G:+TraceTruffleCompilationDetails -G:+TraceTruffleCompilation -G:TruffleCompilationThreshold=1 -XX:+UnlockDiagnosticVMOptions -XX:CompileCommand=print,*::callRoot"
+    exec.jvmflags -> "-server -Xss64m -G:+TruffleCompilationExceptionsAreFatal -G:TruffleCompilationThreshold=1"
     ) in {
     val parsers: mutable.Map[Int, (ParserState, NonterminalName)] = mutable.HashMap()
 
@@ -80,6 +82,15 @@ extends PerformanceTest.OfflineReport {
             result = result && (s(i) == 'a')
             i += 1
           }
+        }
+      }
+    }
+
+    measure method("handwritten") in {
+      val s = Tests.repeat('a', 150)
+      using(sizes) in {
+        _ => {
+          new ChainsRD(s).s()
         }
       }
     }
