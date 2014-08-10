@@ -9,6 +9,6 @@ public class EOF extends GrammarNode {
 
     @Override
     public boolean executeParse(VirtualFrame frame) {
-        return state.getCurrentIndex() == state.getString().length();
+        return state.atEOF();
     }
 }
