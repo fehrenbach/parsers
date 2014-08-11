@@ -20,9 +20,9 @@ extends PerformanceTest.OfflineReport {
 
 
   performance of "LongChainsOuter" config (
-    exec.minWarmupRuns -> 10,
+    exec.minWarmupRuns -> 100,
     exec.maxWarmupRuns -> 10000,
-    exec.benchRuns -> 100,
+    exec.benchRuns -> 1000,
     // Just want to run one VM, but the Graal-enabled one with custom flags.
     exec.independentSamples -> 1,
     exec.jvmcmd -> "/home/stefan/opt/graalvm-jdk1.8.0-0.3/bin/java",
@@ -35,7 +35,6 @@ extends PerformanceTest.OfflineReport {
       parsers getOrElseUpdate(chainLength, {
         UninitializedNonterminalCall.callNodeType = mode
         val parser = new ParserState(Tests.repeat('a', 150))
-
         val startSymbol = Tests.createChainedProductionsOuter(parser, chainLength)
 
         println(s"start our warmup loop for $chainLength")
@@ -49,43 +48,35 @@ extends PerformanceTest.OfflineReport {
       })
     }
 
-    measure method("unoptimized x 10") in {
+    measure method("unoptimized") in {
       using(sizes) setUp {
         setupParser(UninitializedNonterminalCall.CallNodeType.UNOPTIMIZED)
       } in {
         chainLength => {
           val (parser, startSymbol) = parsers(chainLength)
-          for (i <- 1 to 10) {
-            parser.resetParserState()
-            parser.parse(startSymbol)
-          }
+          parser.resetParserState()
+          parser.parse(startSymbol)
         }
       }
     }
 
-    measure method("cached x 1000") in {
+    measure method("cached") in {
       using(sizes) setUp {
         setupParser(UninitializedNonterminalCall.CallNodeType.CACHED)
       } in {
         chainLength => {
           val (parser, startSymbol) = parsers(chainLength)
-          for (i <- 1 to 1000) {
-            parser.resetParserState()
-            parser.parse(startSymbol)
-          }
+          parser.resetParserState()
+          parser.parse(startSymbol)
         }
       }
     }
 
-    measure method("handwritten x 1000") in {
+    measure method("handwritten") in {
       val s = Tests.repeat('a', 150)
       using(sizes) in {
         _ => {
-          val p = new ChainsOuterRD(s)
-          for (i <- 1 to 1000) {
-            p.s()
-            p.reset()
-          }
+          new ChainsOuterRD(s).s()
         }
       }
     }
