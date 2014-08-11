@@ -265,6 +265,15 @@ public class ChainsRD {
     public void reset() {
         this.pos = 0;
     }
+
+    public static boolean optimal(String s) {
+        boolean result = true;
+        final int length = s.length();
+        for (int i = 0; i < length; i++) {
+            result &= (s.charAt(i) == 'a');
+        }
+        return result;
+    }
 }
 
 

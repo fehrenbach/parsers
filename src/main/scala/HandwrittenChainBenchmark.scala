@@ -20,16 +20,11 @@ object HandwrittenChainBenchmark
     exec.jvmflags -> "-server -Xss128m -G:+TruffleCompilationExceptionsAreFatal -G:TruffleCompilationThreshold=1"
     ) in {
     val s = Tests.repeat('a', 150)
-    var result = true
 
-    measure method ("optimal") in {
+    measure method("optimal") in {
       using(sizes) in {
         _ => {
-          var i = 0
-          while (i < s.length) {
-            result = result && (s(i) == 'a')
-            i += 1
-          }
+          ChainsRD.optimal(s)
         }
       }
     }
@@ -50,6 +45,5 @@ object HandwrittenChainBenchmark
       }
     }
 
-    print(result)
   }
 }
