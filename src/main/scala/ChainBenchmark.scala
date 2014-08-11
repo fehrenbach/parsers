@@ -1,6 +1,5 @@
 import org.scalameter.Parameters
 import org.scalameter.api._
-import parsers.ChainsRD
 import parsers.truffle.{NonterminalName, ParserState, Tests, UninitializedNonterminalCall}
 
 import scala.collection.mutable
@@ -68,29 +67,6 @@ extends PerformanceTest.OfflineReport {
           val (parser, startSymbol) = parsers(chainLength)
           parser.resetParserState()
           parser.parse(startSymbol)
-        }
-      }
-    }
-
-    measure method("optimal") in {
-      val s = Tests.repeat('a', 150)
-      using(sizes) in {
-        _ => {
-          var result = true
-          var i = 0
-          while (i < s.length) {
-            result = result && (s(i) == 'a')
-            i += 1
-          }
-        }
-      }
-    }
-
-    measure method("handwritten") in {
-      val s = Tests.repeat('a', 150)
-      using(sizes) in {
-        _ => {
-          new ChainsRD(s).s()
         }
       }
     }
