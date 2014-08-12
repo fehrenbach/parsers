@@ -30,13 +30,13 @@ case class CSVReporter() extends Reporter {
   }
 
   def writeToFile(writer: PrintWriter)(result: CurveData) = {
-    val curve = result.context.properties.getOrElse(Key("curve"), "unknown").toString
-    val scope = result.context.properties.getOrElse(Key("scope"), "unknown").toString
+    val nameInner = result.context.properties.getOrElse(Key("scope"), "unknown").asInstanceOf[List[String]](0).toString
+    val nameOuter = result.context.properties.getOrElse(Key("scope"), "unknown").asInstanceOf[List[String]](1).toString
 
     result.measurements.foreach(measurement => {
       val params = measurement.params
       measurement.data.complete foreach(datapoint => {
-        writer.format("%s;%s;%s;%e%n", curve, scope, params, datapoint: java.lang.Double)
+        writer.format("%s;%s;%s;%e%n", nameOuter, nameInner, params.axisData.values.head.toString, datapoint: java.lang.Double)
       })
     })
   }
