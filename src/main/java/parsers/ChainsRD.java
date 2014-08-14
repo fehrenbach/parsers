@@ -267,12 +267,11 @@ public class ChainsRD {
     }
 
     public static boolean optimal(String s) {
-        boolean result = true;
         final int length = s.length();
-        for (int i = 0; i < length; i++) {
-            result &= (s.charAt(i) == 'a');
-        }
-        return result;
+        for (int i = 0; i < length; i++)
+            if (s.charAt(i) != 'a')
+                return false;
+        return true;
     }
 }
 
